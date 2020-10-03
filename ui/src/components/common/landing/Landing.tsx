@@ -16,7 +16,6 @@ const LandingComponent = (): JSX.Element => {
     const styles = landingStyles();
 
     useEffect(() => {
-        console.log('making db call');
         axios.get<User[]>(`${API_BASE_URL}/users`)
             .then(
                 (result) => {
