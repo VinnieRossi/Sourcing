@@ -11,23 +11,26 @@ on:
 jobs:
   build-and-deploy:
     runs-on: windows-latest
-    working-directory: ./api
 
     steps:
     - uses: actions/checkout@master
 
     - name: Set up .NET Core
+      working-directory: ./api
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.102'
 
     - name: Build with dotnet
+      working-directory: ./api
       run: dotnet build --configuration Release
 
     - name: dotnet publish
+      working-directory: ./api
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
     - name: Deploy to Azure Web App
+      working-directory: ./api
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'sourcingapi'
