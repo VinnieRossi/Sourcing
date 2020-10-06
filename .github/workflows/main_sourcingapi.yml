@@ -22,11 +22,11 @@ jobs:
 
     - name: Build with dotnet
       run: dotnet build --configuration Release
-      working-directory: ./api
+      working-directory: ./api/SourcingApi
 
     - name: dotnet publish
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-      working-directory: ./api
+      working-directory: ./api/SourcingApi
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
