@@ -32,8 +32,8 @@ namespace SourcingApi
 
             services.AddDbContext<SourcingDbContext>(
                 options => options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection"), sqlOptions => { }));
-                    //Configuration.GetValue<string>("DefaultConnection"), sqlOptions => { }));
+            //Configuration.GetConnectionString("sourcing-prod"), sqlOptions => { }));
+            Configuration.GetConnectionString("DefaultConnection"), sqlOptions => { }));
             services.AddScoped<UserService>();
         }
 
@@ -48,6 +48,17 @@ namespace SourcingApi
             } else
             {
                 app.UseHsts();
+            }
+
+            // Run migrations on app start
+            using (var serviceScope = app.ApplicationServices
+            .GetRequiredService<IServiceScopeFactory>()
+            .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<SourcingDbContext>())
+                {
+                    context.Database.Migrate();
+                }
             }
 
             app.UseHttpsRedirection();
