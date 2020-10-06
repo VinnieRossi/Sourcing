@@ -32,7 +32,6 @@ namespace SourcingApi
 
             services.AddDbContext<SourcingDbContext>(
                 options => options.UseSqlServer(
-            //Configuration.GetConnectionString("sourcing-prod"), sqlOptions => { }));
             Configuration.GetConnectionString("DefaultConnection"), sqlOptions => { }));
             services.AddScoped<UserService>();
         }
