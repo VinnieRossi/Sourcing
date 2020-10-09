@@ -28,9 +28,13 @@ namespace SourcingApi
 
                     config.AddAzureAppConfiguration(options => {
                         options.Connect(builtConfig["AppConfigUri"])
-                               .UseFeatureFlags(featureFlagOptions => {
-                                   featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(5);
-                               });
+                            .ConfigureRefresh(refresh => {
+                                refresh.Register("TestApp:Settings:Message")
+                                   .SetCacheExpiration(TimeSpan.FromSeconds(10));
+                            })
+                            .UseFeatureFlags(featureFlagOptions => {
+                                featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(1);
+                            });
                     });
 
                     config.AddAzureKeyVault(
