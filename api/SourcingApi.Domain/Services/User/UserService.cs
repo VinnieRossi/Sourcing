@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SourcingApi.Data;
 using SourcingApi.Domain.Dtos;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -21,6 +23,7 @@ namespace SourcingApi.Domain.Services.User
 
         public async Task<List<UserDto>> GetUsers()
         {
+
             var users = await _dbContext.Users
                 .Where(user => user.IsActive)
                 .Select(user => new UserDto
@@ -45,6 +48,15 @@ namespace SourcingApi.Domain.Services.User
             await _dbContext.SaveChangesAsync();
 
             return await GetUsers();
+        }
+
+        public async Task<string> Test()
+        {
+            var x = ConfigurationManager.AppSettings["TestApp:Settings:Message"];
+
+            Console.WriteLine(x);
+
+            return x;
         }
     }
 }

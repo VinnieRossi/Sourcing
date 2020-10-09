@@ -32,6 +32,13 @@ namespace SourcingApi
                         new KeyVaultClient.AuthenticationCallback(
                             azureServiceTokenProvider.KeyVaultTokenCallback));
 
+                    config.AddAzureAppConfiguration(options => {
+                        options.Connect(builtConfig["AppConfigUri"])
+                               .UseFeatureFlags(featureFlagOptions => {
+                                   featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(5);
+                               });
+                    });
+
                     config.AddAzureKeyVault(
                         builtConfig["KeyVaultUri"],
                         keyVaultClient,
