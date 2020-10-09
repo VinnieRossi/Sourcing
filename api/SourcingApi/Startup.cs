@@ -67,8 +67,6 @@ namespace SourcingApi
             {
                 endpoints.MapControllers();
             });
-
-            //app.UseCors();
         }
     }
 }
