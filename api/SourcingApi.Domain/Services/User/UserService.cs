@@ -4,10 +4,7 @@ using SourcingApi.Data;
 using SourcingApi.Domain.Dtos;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SourcingApi.Domain.Services.User
@@ -15,10 +12,12 @@ namespace SourcingApi.Domain.Services.User
     public class UserService
     {
         private readonly SourcingDbContext _dbContext;
+        private readonly IConfiguration _configuration;
 
-        public UserService(SourcingDbContext dbContext)
+        public UserService(SourcingDbContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _configuration = configuration;
         }
 
         public async Task<List<UserDto>> GetUsers()
@@ -52,7 +51,9 @@ namespace SourcingApi.Domain.Services.User
 
         public async Task<string> Test()
         {
-            var x = ConfigurationManager.AppSettings["TestApp:Settings:Message"];
+            //var x = ConfigurationManager.AppSettings["TestApp:Settings:Message"];
+
+            var x = _configuration["TestApp:Settings:Message"];
 
             Console.WriteLine(x);
 
