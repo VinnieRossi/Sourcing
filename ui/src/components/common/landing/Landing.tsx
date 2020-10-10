@@ -48,6 +48,7 @@ const LandingComponent = (): JSX.Element => {
             <Typography variant="h1" className={styles.title}>
                 Landing Page
           </Typography>
+            {error && <span>error: {error}</span>}
             {isLoaded && users && (
                 <List>
                     {users.map((user: any) => <ListItem key={user.id}><ListItemText>User Id: {user.id}</ListItemText></ListItem>)}
