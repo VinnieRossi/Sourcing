@@ -27,17 +27,17 @@ namespace SourcingApi.Controllers
             return await _userService.GetUsers();
         }
 
-        [HttpGet("beta")]
-        [FeatureGate(SourcingFeatureFlags.Beta)]
-        public async Task<string> Beta()
-        {
-            return "User is in Beta";
-        }
-
         [HttpPost("user")]
         public async Task<List<UserDto>> CreateUser(UserDto newUser)
         {
             return await _userService.CreateUser(newUser);
+        }
+
+        [HttpGet("beta")]
+        [FeatureGate(SourcingFeatureFlags.Beta)]
+        public async Task<string> Beta()
+        {
+            return "User is in Beta!";
         }
     }
 }
