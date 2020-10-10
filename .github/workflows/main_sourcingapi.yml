@@ -5,6 +5,8 @@ name: Build and deploy ASP.Net Core app to Azure Web App - sourcingapi
 
 on:
   push:
+    paths: 
+      - ui/**
     branches:
       - main
 
