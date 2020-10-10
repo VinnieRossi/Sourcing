@@ -16,8 +16,8 @@ const App = (): JSX.Element => {
       <Router>
         <main>
           <Switch>
-            <Route path="/" component={Landing} />
             <Route path="/about" component={About} />
+            <Route path="/" component={Landing} />
           </Switch>
         </main>
       </Router>
