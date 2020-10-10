@@ -15,36 +15,41 @@ namespace SourcingApi
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder CreateHostBuilder(string[] args) => 
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((context, config) =>
                 {
-                    var builtConfig = config.Build();
+            var builtConfig = config.Build();
 
-                    var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                    var keyVaultClient = new KeyVaultClient(
-                        new KeyVaultClient.AuthenticationCallback(
-                            azureServiceTokenProvider.KeyVaultTokenCallback));
+            var azureServiceTokenProvider = new AzureServiceTokenProvider();
+            var keyVaultClient = new KeyVaultClient(
+                new KeyVaultClient.AuthenticationCallback(
+                    azureServiceTokenProvider.KeyVaultTokenCallback));
 
-                    config.AddAzureAppConfiguration(options => {
-                        options.Connect(builtConfig["AppConfigUri"])
-                            .ConfigureRefresh(refresh => {
-                                refresh.Register("TestApp:Settings:Message")
-                                   .SetCacheExpiration(TimeSpan.FromSeconds(10));
-                            })
-                            .UseFeatureFlags(featureFlagOptions => {
-                                featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(1);
-                            });
+            config.AddAzureAppConfiguration(options => {
+
+                options.Connect(builtConfig["AppConfigUri"])
+                    //.ConfigureRefresh(refresh => {
+                    //    refresh.Register(key: "TestApp:Settings:Message", label: LabelFilter.Null, refreshAll: true);
+
+                    //    refresh.SetCacheExpiration(TimeSpan.FromSeconds(5));
+                    //})
+                    .UseFeatureFlags(featureFlagOptions => {
+                        featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(1);
                     });
 
-                    config.AddAzureKeyVault(
-                        builtConfig["KeyVaultUri"],
-                        keyVaultClient,
-                        new DefaultKeyVaultSecretManager());
-                })
+
+            });
+
+            config.AddAzureKeyVault(
+                builtConfig["KeyVaultUri"],
+                keyVaultClient,
+                new DefaultKeyVaultSecretManager());
+        })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
-                });
+            webBuilder.UseStartup<Startup>();
+        });
+
     }
 }

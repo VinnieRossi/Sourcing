@@ -28,11 +28,5 @@ namespace SourcingApi.Controllers
         {
             return await _userService.CreateUser(newUser);
         }
-
-        [HttpGet("test")]
-        public async Task<string> Test()
-        {
-            return await _userService.Test();
-        }
     }
 }

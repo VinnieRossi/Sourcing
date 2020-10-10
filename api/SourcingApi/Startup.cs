@@ -28,6 +28,8 @@ namespace SourcingApi
                 options => options.UseSqlServer(
             Configuration.GetConnectionString("DefaultConnection"), sqlOptions => { }));
 
+            services.AddAzureAppConfiguration();
+
             services.AddFeatureManagement();
 
             services.AddScoped<UserService>();

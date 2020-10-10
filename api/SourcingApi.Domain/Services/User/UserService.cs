@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using SourcingApi.Data;
 using SourcingApi.Domain.Dtos;
 using System;
@@ -14,7 +13,6 @@ namespace SourcingApi.Domain.Services.User
     {
         private readonly SourcingDbContext _dbContext;
         private readonly IConfiguration _configuration;
-        private readonly IConfigurationRefresher _refresher;
 
         public UserService(SourcingDbContext dbContext, IConfiguration configuration)
         {
@@ -49,17 +47,6 @@ namespace SourcingApi.Domain.Services.User
             await _dbContext.SaveChangesAsync();
 
             return await GetUsers();
-        }
-
-        public async Task<string> Test()
-        {
-            await _refresher.TryRefreshAsync();
-
-            var x = _configuration["TestApp:Settings:Message"];
-
-            Console.WriteLine(x);
-
-            return x;
         }
     }
 }
