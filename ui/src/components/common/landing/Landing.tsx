@@ -6,7 +6,7 @@ import { User } from '../api/apiModels';
 import { API_BASE_URL } from '../constants';
 import { landingStyles } from './LandingStyles';
 
-const LandingComponent = (): JSX.Element => {
+const Landing = (): JSX.Element => {
 
     // TODO: Create custom hook to handle error, loading, data
     const [error, setError] = useState(null);
@@ -60,4 +60,4 @@ const LandingComponent = (): JSX.Element => {
     );
 };
 
-export default LandingComponent;
+export default Landing;

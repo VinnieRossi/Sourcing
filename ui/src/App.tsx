@@ -3,7 +3,8 @@ import {
   Switch,
   Route, BrowserRouter as Router
 } from "react-router-dom";
-import LandingComponent from './common/landing/Landing';
+import About from './components/About';
+import Landing from './components/common/landing/Landing';
 
 const App = (): JSX.Element => {
 
@@ -15,7 +16,8 @@ const App = (): JSX.Element => {
       <Router>
         <main>
           <Switch>
-            <Route path="/" component={LandingComponent} />
+            <Route path="/" component={Landing} />
+            <Route path="/about" component={About} />
           </Switch>
         </main>
       </Router>
