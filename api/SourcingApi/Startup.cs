@@ -67,6 +67,8 @@ namespace SourcingApi
 
             app.UseAuthorization();
 
+            //app.UseWebSockets();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
