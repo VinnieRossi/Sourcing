@@ -28,7 +28,7 @@ namespace SourcingApi
                 options => options.UseSqlServer(
             Configuration.GetConnectionString("DefaultConnection"), sqlOptions => { }));
 
-            //services.AddAzureAppConfiguration();
+            services.AddAzureAppConfiguration();
 
             services.AddFeatureManagement();
 
@@ -58,6 +58,8 @@ namespace SourcingApi
                     context.Database.Migrate();
                 }
             }
+
+            app.UseAzureAppConfiguration();
 
             app.UseHttpsRedirection();
 
