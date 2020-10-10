@@ -37,7 +37,7 @@ namespace SourcingApi.Controllers
         [FeatureGate(SourcingFeatureFlags.Beta)]
         public async Task<string> Beta()
         {
-            return "User is in Beta!";
+            return "User is in Beta";
         }
     }
 }
