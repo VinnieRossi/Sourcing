@@ -19,32 +19,31 @@ namespace SourcingApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((context, config) =>
                 {
-            var builtConfig = config.Build();
+                    var builtConfig = config.Build();
 
-            var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            var keyVaultClient = new KeyVaultClient(
-                new KeyVaultClient.AuthenticationCallback(
-                    azureServiceTokenProvider.KeyVaultTokenCallback));
+                    var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                    var keyVaultClient = new KeyVaultClient(
+                        new KeyVaultClient.AuthenticationCallback(
+                            azureServiceTokenProvider.KeyVaultTokenCallback));
 
-            config.AddAzureAppConfiguration(options => {
+                    config.AddAzureAppConfiguration(options => {
 
-                options.Connect(builtConfig["AppConfigUri"])
-                    .UseFeatureFlags(featureFlagOptions => {
-                        featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(1);
+                        options.Connect(builtConfig["AppConfigUri"])
+                            .UseFeatureFlags();
+                            //.UseFeatureFlags(featureFlagOptions => {
+                            //    featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(1);
+                            //});
                     });
 
-
-            });
-
-            config.AddAzureKeyVault(
-                builtConfig["KeyVaultUri"],
-                keyVaultClient,
-                new DefaultKeyVaultSecretManager());
-        })
+                    config.AddAzureKeyVault(
+                        builtConfig["KeyVaultUri"],
+                        keyVaultClient,
+                        new DefaultKeyVaultSecretManager());
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-            webBuilder.UseStartup<Startup>();
-        });
+                    webBuilder.UseStartup<Startup>();
+                });
 
     }
 }

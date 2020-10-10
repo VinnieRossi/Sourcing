@@ -48,5 +48,10 @@ namespace SourcingApi.Domain.Services.User
 
             return await GetUsers();
         }
+
+        public async Task<string> Beta()
+        {
+            return "User is in Beta";
+        }
     }
 }

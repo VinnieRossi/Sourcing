@@ -28,7 +28,7 @@ namespace SourcingApi
                 options => options.UseSqlServer(
             Configuration.GetConnectionString("DefaultConnection"), sqlOptions => { }));
 
-            services.AddAzureAppConfiguration();
+            //services.AddAzureAppConfiguration();
 
             services.AddFeatureManagement();
 
