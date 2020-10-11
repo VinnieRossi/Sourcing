@@ -1,6 +1,7 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
+import { Link, Typography } from "@material-ui/core";
 import { landingStyles } from "./common/landing/LandingStyles";
+import Chat from "./chat/Chat";
 
 const About = (): JSX.Element => {
 
@@ -11,6 +12,8 @@ const About = (): JSX.Element => {
             <Typography variant="h1" className={styles.title}>
                 About Page
           </Typography>
+            <Link href="/">Home</Link>
+            <Chat />
         </div>
     );
 };

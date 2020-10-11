@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemText, Typography } from '@material-ui/core';
+import { Link, List, ListItem, ListItemText, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button/Button';
 import axios from 'axios'
 import React, { useEffect, useState } from "react";
@@ -48,6 +48,7 @@ const Landing = (): JSX.Element => {
             <Typography variant="h1" className={styles.title}>
                 Landing Page
           </Typography>
+            <Link href="/about">About</Link>
             {error && <span>error: {error}</span>}
             {isLoaded && users && (
                 <List>

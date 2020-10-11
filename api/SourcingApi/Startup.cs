@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.FeatureManagement;
 using SourcingApi.Data;
 using SourcingApi.Domain.Services.User;
+using SourcingApi.Hubs;
 
 namespace SourcingApi
 {
@@ -32,6 +33,8 @@ namespace SourcingApi
 
             services.AddFeatureManagement();
 
+            services.AddSignalR();
+
             services.AddScoped<UserService>();
         }
 
@@ -42,7 +45,11 @@ namespace SourcingApi
             {
                 app.UseDeveloperExceptionPage();
 
-                app.UseCors(o => o.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+                // SignalR requires three policies enabled:
+                // The origins must be explicitly specified. Wildcards are not accepted
+                // GET and POST HTTP methods must be allowed
+                // Credentials must be allowed
+                app.UseCors(o => o.WithOrigins("http://localhost:3000").AllowCredentials().AllowAnyMethod().AllowAnyHeader());
             } else
             {
                 app.UseHsts();
@@ -67,11 +74,12 @@ namespace SourcingApi
 
             app.UseAuthorization();
 
-            //app.UseWebSockets();
+            app.UseWebSockets();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/hubs/chat");
             });
         }
     }
