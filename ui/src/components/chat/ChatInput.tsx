@@ -33,9 +33,11 @@ const ChatInput = (props: any): JSX.Element => {
             <label htmlFor="user">User:</label>
             <br />
             <input
+                type="text"
                 id="user"
                 name="user"
                 value={user}
+                autoComplete="off"
                 onChange={onUserUpdate} />
             <br />
             <label htmlFor="message">Message:</label>
@@ -44,6 +46,7 @@ const ChatInput = (props: any): JSX.Element => {
                 type="text"
                 id="message"
                 name="message"
+                autoComplete="off"
                 value={message}
                 onChange={onMessageUpdate} />
             <br /><br />
