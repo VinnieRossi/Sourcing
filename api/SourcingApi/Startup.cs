@@ -33,8 +33,6 @@ namespace SourcingApi
 
             services.AddFeatureManagement();
 
-            //services.AddSignalR();
-
             services.AddSignalR().AddAzureSignalR(Configuration.GetConnectionString("AzureSignalR"));
 
             services.AddScoped<UserService>();
@@ -51,10 +49,8 @@ namespace SourcingApi
                 // The origins must be explicitly specified. Wildcards are not accepted
                 // GET and POST HTTP methods must be allowed
                 // Credentials must be allowed
-
                 app.UseCors(o => o.WithOrigins("http://localhost:3000").AllowCredentials().AllowAnyMethod().AllowAnyHeader());
 
-                //app.UseCors(o => o.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             } else
             {
                 app.UseHsts();
