@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Mvc;
+using SourcingApi.AzureAppConfig;
 using SourcingApi.Domain.Dtos;
 using SourcingApi.Domain.Services.User;
 
@@ -13,12 +14,12 @@ namespace SourcingApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
-        private readonly IFeatureManager _featureManager;
+        private readonly AppConfigProvider _appConfigProvider;
 
-        public UserController(UserService userService, IFeatureManager featureManager)
+        public UserController(UserService userService, AppConfigProvider appConfigProvider)
         {
             _userService = userService;
-            _featureManager = featureManager;
+            _appConfigProvider = appConfigProvider;
         }
 
         [HttpGet("users")]
@@ -38,6 +39,12 @@ namespace SourcingApi.Controllers
         public async Task<string> Beta()
         {
             return await _userService.Beta();
+        }
+
+        [HttpGet("banner")]
+        public async Task<FeatureFlagConfig> GetBannerInfo()
+        {
+            return _appConfigProvider.GetBannerInfo();
         }
     }
 }

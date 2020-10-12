@@ -29,6 +29,10 @@ namespace SourcingApi
                     config.AddAzureAppConfiguration(options => {
 
                         options.Connect(builtConfig["AppConfigUri"])
+                            .ConfigureRefresh(refresh => {
+                                refresh.Register("Banner:Sentinel", refreshAll: true)
+                                    .SetCacheExpiration(TimeSpan.FromSeconds(10));
+                            })
                             .UseFeatureFlags();
                             //.UseFeatureFlags(featureFlagOptions => {
                             //    featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(1);
