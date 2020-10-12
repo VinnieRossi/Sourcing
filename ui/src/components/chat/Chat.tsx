@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import ChatInput from './ChatInput';
 import ChatWindow from './ChatWindow';
 import { API_BASE_URL } from '../common/constants';
 
 const Chat = () => {
-    const [connection, setConnection]: any = useState(null);
+    const [connection, setConnection] = useState<HubConnection>();
     const [chat, setChat]: any = useState([]);
     const [playerState, setPlayerState] = useState({ user: 'default', x: 0, y: 0 } as any);
     const latestChat: any = useRef(null);
@@ -36,6 +36,10 @@ const Chat = () => {
 
     const setupConnectionListeners = () => {
 
+        if (!connection) {
+            return;
+        }
+
         connection.on('UpdatePlayerState', (state: any) => {
             console.log(state);
 
@@ -56,7 +60,7 @@ const Chat = () => {
             message: message
         };
 
-        if (connection.connectionStarted) {
+        if (connection?.state === HubConnectionState.Connected) {
             try {
                 await connection.send('SendMessage', chatMessage);
             }
@@ -71,9 +75,9 @@ const Chat = () => {
 
     const moveSquare = async () => {
 
-        if (connection.connectionStarted) {
+        if (connection?.state === HubConnectionState.Connected) {
             try {
-                await connection.send('SendPlayerState', playerState);
+                await connection?.send('SendPlayerState', playerState);
             }
             catch (e) {
                 console.log(e);
