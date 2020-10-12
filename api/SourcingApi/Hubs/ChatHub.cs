@@ -14,5 +14,13 @@ namespace SourcingApi.Hubs
         {
             await Clients.All.ReceiveMessage(message);
         }
+
+        public async Task SendPlayerState(PlayerState state)
+        {
+            state.x++;
+            state.y++;
+
+            await Clients.All.UpdatePlayerState(state);
+        }
     }
 }

@@ -8,6 +8,7 @@ import { API_BASE_URL } from '../common/constants';
 const Chat = () => {
     const [connection, setConnection]: any = useState(null);
     const [chat, setChat]: any = useState([]);
+    const [playerState, setPlayerState] = useState({ user: 'default', x: 0, y: 0 } as any);
     const latestChat: any = useRef(null);
 
     latestChat.current = chat;
@@ -27,16 +28,27 @@ const Chat = () => {
                 .then((result: any) => {
                     console.log('Connected!');
 
-                    connection.on('ReceiveMessage', (message: any) => {
-                        const updatedChat = [...latestChat.current];
-                        updatedChat.push(message);
-
-                        setChat(updatedChat);
-                    });
+                    setupConnectionListeners();
                 })
                 .catch((e: any) => console.log('Connection failed: ', e));
         }
     }, [connection]);
+
+    const setupConnectionListeners = () => {
+
+        connection.on('UpdatePlayerState', (state: any) => {
+            console.log(state);
+
+            setPlayerState(state);
+        });
+
+        connection.on('ReceiveMessage', (message: any) => {
+            const updatedChat = [...latestChat.current];
+            updatedChat.push(message);
+
+            setChat(updatedChat);
+        });
+    };
 
     const sendMessage = async (user: any, message: any) => {
         const chatMessage = {
@@ -57,9 +69,26 @@ const Chat = () => {
         }
     }
 
+    const moveSquare = async () => {
+
+        if (connection.connectionStarted) {
+            try {
+                await connection.send('SendPlayerState', playerState);
+            }
+            catch (e) {
+                console.log(e);
+            }
+        }
+        else {
+            alert('No connection to server yet.');
+        }
+    }
+
     return (
         <div>
             <ChatInput sendMessage={sendMessage} />
+            <button onClick={moveSquare} >Move</button>
+            <span>Global counter: {playerState.x}</span>
             <hr />
             <ChatWindow chat={chat} />
         </div>

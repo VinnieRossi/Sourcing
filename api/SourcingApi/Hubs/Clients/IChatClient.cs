@@ -9,5 +9,6 @@ namespace SourcingApi.Hubs.Clients
     public interface IChatClient
     {
         Task ReceiveMessage(ChatMessage message);
+        Task UpdatePlayerState(PlayerState state);
     }
 }
