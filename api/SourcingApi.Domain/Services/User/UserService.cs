@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.FeatureManagement;
 using SourcingApi.Data;
 using SourcingApi.Domain.Dtos;
 using System;
@@ -12,18 +13,19 @@ namespace SourcingApi.Domain.Services.User
     public class UserService
     {
         private readonly SourcingDbContext _dbContext;
-        private readonly IConfiguration _configuration;
+        private readonly IFeatureManager _featureManager;
 
-        public UserService(SourcingDbContext dbContext, IConfiguration configuration)
+        public UserService(SourcingDbContext dbContext, IFeatureManager featureManager)
         {
             _dbContext = dbContext;
-            _configuration = configuration;
+            _featureManager = featureManager;
         }
 
         public async Task<List<UserDto>> GetUsers()
         {
 
             var users = await _dbContext.Users
+                .AsQueryable() // Linq Async
                 .Where(user => user.IsActive)
                 .Select(user => new UserDto
                 {
@@ -51,7 +53,17 @@ namespace SourcingApi.Domain.Services.User
 
         public async Task<string> Beta()
         {
-            return "User is in Beta";
+            // await featureManager.IsEnabledAsync(nameof(MyFeatureFlags.FeatureA))
+            var test = _featureManager.GetFeatureNamesAsync(); //.ToListAsync();
+
+            var asdf = await test.ToListAsync();
+
+            if (await _featureManager.IsEnabledAsync("Beta"))
+            {
+                return "User is in Beta";
+            }
+
+            return "User is NOT in Beta";
         }
     }
 }

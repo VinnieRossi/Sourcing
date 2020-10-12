@@ -34,10 +34,10 @@ namespace SourcingApi.Controllers
         }
 
         [HttpGet("beta")]
-        [FeatureGate(SourcingFeatureFlags.Beta)]
+        //[FeatureGate(SourcingFeatureFlags.Beta)]
         public async Task<string> Beta()
         {
-            return "User is in Beta";
+            return await _userService.Beta();
         }
     }
 }
