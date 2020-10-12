@@ -32,6 +32,7 @@ const Chat = () => {
                 })
                 .catch((e: any) => console.log('Connection failed: ', e));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [connection]);
 
     const setupConnectionListeners = () => {
