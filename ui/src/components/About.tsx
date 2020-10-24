@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, Typography } from "@material-ui/core";
 import { landingStyles } from "./common/landing/LandingStyles";
-import Chat from "./chat/Chat";
+import Game from "./game/Game";
 
 const About = (): JSX.Element => {
 
@@ -13,7 +13,7 @@ const About = (): JSX.Element => {
                 About Page
           </Typography>
             <Link href="/">Home</Link>
-            <Chat />
+            <Game />
         </div>
     );
 };

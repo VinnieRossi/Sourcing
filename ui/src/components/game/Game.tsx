@@ -1,31 +1,14 @@
 
-import React, { useState, useEffect, useRef } from 'react';
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
-import ChatInput from './ChatInput';
-import ChatWindow from './ChatWindow';
+import React, { useState, useEffect, useRef } from 'react';
 import { API_BASE_URL } from '../common/constants';
+import Canvas from './canvas/Canvas';
+import Chat from './chat/Chat';
 
-const Chat = () => {
+const Game: React.FunctionComponent = (): JSX.Element => {
     const [connection, setConnection] = useState<HubConnection>();
-    const [chat, setChat]: any = useState([]);
     const [playerState, setPlayerState] = useState({ user: 'default', x: 0, y: 0 } as any);
-    const latestChat: any = useRef(null);
-
     const canvasRef = useRef(null);
-
-
-    latestChat.current = chat;
-
-    useEffect(() => {
-        const canvas: any = canvasRef.current;
-        const context = canvas.getContext('2d');
-
-        context.fillStyle = '#FFFFFF';
-        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-
-        context.fillStyle = '#000000';
-        context.fillRect(playerState.x, playerState.y, 15, 15);
-    }, [playerState]);
 
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()
@@ -61,35 +44,16 @@ const Chat = () => {
             setPlayerState(state);
         });
 
-        connection.on('ReceiveMessage', (message: any) => {
-            const updatedChat = [...latestChat.current];
-            updatedChat.push(message);
+        // connection.on('ReceiveMessage', (message: any) => {
+        //     const updatedChat = [...latestChat.current];
+        //     updatedChat.push(message);
 
-            setChat(updatedChat);
-        });
+        //     setChat(updatedChat);
+        // });
 
         // connection.on('GetBannerInfo', (bannerInfo: any) => {
 
         // });
-    };
-
-    const sendMessage = async (user: any, message: any) => {
-        const chatMessage = {
-            user: user,
-            message: message
-        };
-
-        if (connection?.state === HubConnectionState.Connected) {
-            try {
-                await connection.send('SendMessage', chatMessage);
-            }
-            catch (e) {
-                console.log(e);
-            }
-        }
-        else {
-            alert('No connection to server yet.');
-        }
     };
 
     const moveSquare = async () => {
@@ -107,20 +71,14 @@ const Chat = () => {
         }
     };
 
-    const draw = () => {
-
-    };
-
     return (
         <div>
-            <ChatInput sendMessage={sendMessage} />
+            <Canvas connection={connection as any} playerState={playerState} />
+            <Chat connection={connection as any} />
             <button onClick={moveSquare} >Move</button>
             <span>Global counter: {playerState.x}</span>
-            <hr />
-            <ChatWindow chat={chat} />
-            <canvas ref={canvasRef} height="800" width="800" />
         </div>
     );
 };
 
-export default Chat;
+export default Game;
