@@ -1,26 +1,38 @@
 
 import { HubConnection } from '@microsoft/signalr';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { User } from '../../common/api/apiModels';
 
 interface CanvasProps {
     connection: HubConnection;
-    playerState: any;
+    players: User[];
 }
 
-const Canvas: React.FunctionComponent<CanvasProps> = ({ connection, playerState }: CanvasProps): JSX.Element => {
+const Canvas: React.FunctionComponent<CanvasProps> = ({ connection, players }: CanvasProps): JSX.Element => {
 
-    const canvasRef = useRef(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const colors = ["#0000FF", "#00FF00", "#FF0000", "#FF00FF",];
 
     useEffect(() => {
         const canvas: any = canvasRef.current;
         const context = canvas.getContext('2d');
 
+        clearCanvas(context);
+
+        drawPlayers(context, players);
+    }, [players]);
+
+    const clearCanvas = (context: any) => {
         context.fillStyle = '#FFFFFF';
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    };
 
-        context.fillStyle = '#000000';
-        context.fillRect(playerState.x, playerState.y, 15, 15);
-    }, [playerState]);
+    const drawPlayers = (context: any, players: User[]) => {
+        players.map((player, index) => {
+            context.fillStyle = colors[index];
+            context.fillRect(player.x, player.y, 15, 15);
+        });
+    };
 
     return (
         <div>

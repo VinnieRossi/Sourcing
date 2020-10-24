@@ -1,4 +1,5 @@
 ﻿using SourcingApi.AzureAppConfig;
+using SourcingApi.Domain.Dtos;
 using SourcingApi.Hubs.Models;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,8 @@ namespace SourcingApi.Hubs.Clients
     public interface IChatClient
     {
         Task ReceiveMessage(ChatMessage message);
-        Task UpdatePlayerState(PlayerState state);
+        Task PlayersUpdated(UserDto state);
         Task GetBannerInfo(FeatureFlagConfig config);
+        Task NewPlayerJoined(List<UserDto> players);
     }
 }

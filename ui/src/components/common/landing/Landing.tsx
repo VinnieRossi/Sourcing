@@ -29,19 +29,19 @@ const Landing = (): JSX.Element => {
             });
     }, []);
 
-    const createUser = () => {
+    // const createUser = () => {
 
-        const newUser: User = {
-            id: users.length ? users.length + 1 : 1,
-            isActive: true
-        };
+    //     const newUser: User = {
+    //         id: users.length ? users.length + 1 : 1,
+    //         isActive: true
+    //     };
 
-        axios.post(`${API_BASE_URL}/user`, newUser)
-            .then(res => {
-                setUsers(res.data);
-            })
-            .catch(err => console.error(err));
-    };
+    //     axios.post(`${API_BASE_URL}/user`, newUser)
+    //         .then(res => {
+    //             setUsers(res.data);
+    //         })
+    //         .catch(err => console.error(err));
+    // };
 
     return (
         <div className={styles.root}>
@@ -56,7 +56,7 @@ const Landing = (): JSX.Element => {
                 </List>
             )}
 
-            <Button disabled={!isLoaded} onClick={createUser} variant="contained" color="primary">Create User</Button>
+            {/* <Button disabled={!isLoaded} onClick={createUser} variant="contained" color="primary">Create User</Button> */}
         </div>
     );
 };

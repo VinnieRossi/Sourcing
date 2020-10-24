@@ -14,12 +14,12 @@ namespace SourcingApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
-        private readonly AppConfigProvider _appConfigProvider;
+        //private readonly AppConfigProvider _appConfigProvider;
 
-        public UserController(UserService userService, AppConfigProvider appConfigProvider)
+        public UserController(UserService userService)
         {
             _userService = userService;
-            _appConfigProvider = appConfigProvider;
+            //_appConfigProvider = appConfigProvider;
         }
 
         [HttpGet("users")]
@@ -34,17 +34,17 @@ namespace SourcingApi.Controllers
             return await _userService.CreateUser(newUser);
         }
 
-        [HttpGet("beta")]
-        //[FeatureGate(SourcingFeatureFlags.Beta)]
-        public async Task<string> Beta()
-        {
-            return await _userService.Beta();
-        }
+        //[HttpGet("beta")]
+        ////[FeatureGate(SourcingFeatureFlags.Beta)]
+        //public async Task<string> Beta()
+        //{
+        //    return await _userService.Beta();
+        //}
 
-        [HttpGet("banner")]
-        public async Task<FeatureFlagConfig> GetBannerInfo()
-        {
-            return _appConfigProvider.GetBannerInfo();
-        }
+        //[HttpGet("banner")]
+        //public async Task<FeatureFlagConfig> GetBannerInfo()
+        //{
+        //    return _appConfigProvider.GetBannerInfo();
+        //}
     }
 }

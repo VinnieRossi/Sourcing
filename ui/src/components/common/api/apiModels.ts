@@ -1,4 +1,7 @@
 export type User = {
-    id: number,
-    isActive: boolean
+    id: number;
+    name: string;
+    x: number;
+    y: number;
+    isActive: boolean;
 }
