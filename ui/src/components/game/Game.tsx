@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../common/api/apiModels';
 import { API_BASE_URL } from '../common/constants';
 import Canvas from './canvas/Canvas';
-import Chat from './chat/Chat';
 import axios from 'axios'
 import Select from '@material-ui/core/Select';
 import { MenuItem } from '@material-ui/core';
@@ -56,27 +55,27 @@ const Game: React.FunctionComponent = (): JSX.Element => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [connection]);
 
-    const createUser = async () => {
+    // const createUser = async () => {
 
-        const newUser: User = {
-            id: players.length ? players.length + 1 : 1,
-            name: 'random',
-            x: Math.floor(Math.random() * Math.floor(800 - 15)),
-            y: Math.floor(Math.random() * Math.floor(800 - 15)),
-            isActive: true
-        };
+    //     const newUser: User = {
+    //         id: players.length ? players.length + 1 : 1,
+    //         name: 'random',
+    //         x: Math.floor(Math.random() * Math.floor(800 - 15)),
+    //         y: Math.floor(Math.random() * Math.floor(800 - 15)),
+    //         isActive: true
+    //     };
 
-        try {
-            const res = await axios.post(`${API_BASE_URL}/user`, newUser);
+    //     try {
+    //         const res = await axios.post(`${API_BASE_URL}/user`, newUser);
 
-            setPlayers(res.data);
+    //         setPlayers(res.data);
 
-            await connection?.send('PlayerJoin');
-        } catch (e) {
-            console.error(e);
-        }
+    //         await connection?.send('PlayerJoin');
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
 
-    };
+    // };
 
     const setupConnectionListeners = () => {
 

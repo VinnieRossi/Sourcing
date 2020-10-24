@@ -20,6 +20,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ connection, players }: C
         clearCanvas(context);
 
         drawPlayers(context, players);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [players]);
 
     const clearCanvas = (context: any) => {
@@ -28,7 +29,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ connection, players }: C
     };
 
     const drawPlayers = (context: any, players: User[]) => {
-        players.map((player, index) => {
+        players.map((player, index): void => {
             context.fillStyle = colors[index];
             context.fillRect(player.x, player.y, 15, 15);
         });
