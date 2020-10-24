@@ -29,7 +29,7 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ connection, players }: C
     };
 
     const drawPlayers = (context: any, players: User[]) => {
-        players.map((player, index): void => {
+        players.forEach((player, index) => {
             context.fillStyle = colors[index];
             context.fillRect(player.x, player.y, 15, 15);
         });
