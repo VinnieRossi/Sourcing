@@ -11,7 +11,21 @@ const Chat = () => {
     const [playerState, setPlayerState] = useState({ user: 'default', x: 0, y: 0 } as any);
     const latestChat: any = useRef(null);
 
+    const canvasRef = useRef(null);
+
+
     latestChat.current = chat;
+
+    useEffect(() => {
+        const canvas: any = canvasRef.current;
+        const context = canvas.getContext('2d');
+
+        context.fillStyle = '#FFFFFF';
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+
+        context.fillStyle = '#000000';
+        context.fillRect(playerState.x, playerState.y, 15, 15);
+    }, [playerState]);
 
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()
@@ -53,6 +67,10 @@ const Chat = () => {
 
             setChat(updatedChat);
         });
+
+        // connection.on('GetBannerInfo', (bannerInfo: any) => {
+
+        // });
     };
 
     const sendMessage = async (user: any, message: any) => {
@@ -72,7 +90,7 @@ const Chat = () => {
         else {
             alert('No connection to server yet.');
         }
-    }
+    };
 
     const moveSquare = async () => {
 
@@ -87,7 +105,11 @@ const Chat = () => {
         else {
             alert('No connection to server yet.');
         }
-    }
+    };
+
+    const draw = () => {
+
+    };
 
     return (
         <div>
@@ -96,6 +118,7 @@ const Chat = () => {
             <span>Global counter: {playerState.x}</span>
             <hr />
             <ChatWindow chat={chat} />
+            <canvas ref={canvasRef} height="800" width="800" />
         </div>
     );
 };

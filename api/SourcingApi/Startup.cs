@@ -31,11 +31,11 @@ namespace SourcingApi
                 options => options.UseSqlServer(
             this.Configuration.GetConnectionString("DefaultConnection"), sqlOptions => { }));
 
-            services.AddAzureAppConfiguration();
+            // services.AddAzureAppConfiguration();
 
-            services.Configure<FeatureFlagConfig>(this.Configuration.GetSection("Banner"));
+            // services.Configure<FeatureFlagConfig>(this.Configuration.GetSection("Banner"));
 
-            services.AddFeatureManagement();
+            // services.AddFeatureManagement();
 
             services.AddSignalR().AddAzureSignalR(this.Configuration.GetConnectionString("AzureSignalR"));
 
@@ -72,7 +72,7 @@ namespace SourcingApi
                 }
             }
 
-            app.UseAzureAppConfiguration();
+            // app.UseAzureAppConfiguration();
 
             app.UseHttpsRedirection();
 

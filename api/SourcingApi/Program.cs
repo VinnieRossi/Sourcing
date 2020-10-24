@@ -26,18 +26,17 @@ namespace SourcingApi
                         new KeyVaultClient.AuthenticationCallback(
                             azureServiceTokenProvider.KeyVaultTokenCallback));
 
-                    config.AddAzureAppConfiguration(options => {
+                    //config.AddAzureAppConfiguration(options => {
 
-                        options.Connect(builtConfig["AppConfigUri"])
-                            .ConfigureRefresh(refresh => {
-                                refresh.Register("Banner:Sentinel", refreshAll: true)
-                                    .SetCacheExpiration(TimeSpan.FromSeconds(10));
-                            })
-                            .UseFeatureFlags();
-                            //.UseFeatureFlags(featureFlagOptions => {
-                            //    featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(1);
-                            //});
-                    });
+                    //    options.Connect(builtConfig["AppConfigUri"])
+                    //        .ConfigureRefresh(refresh => {
+                    //            refresh.Register("Banner:Sentinel", refreshAll: true)
+                    //                .SetCacheExpiration(TimeSpan.FromSeconds(10));
+                    //        })
+                    //        //.UseFeatureFlags(featureFlagOptions => {
+                    //        //    featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(1);
+                    //        //});
+                    //});
 
                     config.AddAzureKeyVault(
                         builtConfig["KeyVaultUri"],

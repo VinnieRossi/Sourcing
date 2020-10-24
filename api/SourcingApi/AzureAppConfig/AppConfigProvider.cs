@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SourcingApi.AzureAppConfig
 {
-    public class AppConfigProvider
+    public class AppConfigProvider : IAppConfigProvider
     {
         private FeatureFlagConfig _config;
 

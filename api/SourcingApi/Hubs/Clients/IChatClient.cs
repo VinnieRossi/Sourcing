@@ -1,4 +1,5 @@
-﻿using SourcingApi.Hubs.Models;
+﻿using SourcingApi.AzureAppConfig;
+using SourcingApi.Hubs.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace SourcingApi.Hubs.Clients
     {
         Task ReceiveMessage(ChatMessage message);
         Task UpdatePlayerState(PlayerState state);
+        Task GetBannerInfo(FeatureFlagConfig config);
     }
 }
