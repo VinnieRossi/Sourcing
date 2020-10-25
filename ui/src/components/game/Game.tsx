@@ -13,12 +13,86 @@ const Game: React.FunctionComponent = (): JSX.Element => {
     const [players, setPlayers] = useState<User[]>([]);
     const [player, setPlayer] = useState<User>();
 
+    const pressedKeys = useRef<any>({});
+
     const playersRef = useRef<User[]>();
     playersRef.current = players;
 
     const playerRef = useRef<User>();
     playerRef.current = player;
 
+    const KEY = {
+        UP: "ArrowUp",
+        LEFT: "ArrowLeft",
+        DOWN: "ArrowDown",
+        RIGHT: "ArrowRight",
+        W: "w",
+        A: "a",
+        S: "s",
+        D: "d",
+        SPACE: " ",
+        ENTER: "Enter"
+    };
+
+    useEffect(() => {
+
+        const onKeyDown = async (keyEvent: KeyboardEvent) => {
+            const { key } = keyEvent;
+            // console.log('down', key);
+
+            pressedKeys.current[key] = true;
+            const updatedPlayerState: User = playerRef.current!;
+
+            if (pressedKeys.current[KEY.W] || pressedKeys.current[KEY.UP]) {
+                // If server says move is legit
+                // Move self
+                // Broadcast move
+                updatedPlayerState.y -= 2;
+                connection?.send('MovePlayerUp', playerRef.current);
+            }
+
+            if (pressedKeys.current[KEY.A] || pressedKeys.current[KEY.LEFT]) {
+                updatedPlayerState.x -= 2;
+                connection?.send('MovePlayerLeft', playerRef.current);
+            }
+
+            if (pressedKeys.current[KEY.S] || pressedKeys.current[KEY.DOWN]) {
+                updatedPlayerState.y += 2;
+                connection?.send('MovePlayerDown', playerRef.current);
+            }
+
+            if (pressedKeys.current[KEY.D] || pressedKeys.current[KEY.RIGHT]) {
+                updatedPlayerState.x += 2;
+                connection?.send('MovePlayerRight', playerRef.current);
+            }
+
+            // REMOVE:
+            // const previousIndex = players.findIndex((player: User) => player.id === updatedPlayerState.id);
+
+            // const updatedPlayerCollection = Object.assign([], players, { [previousIndex]: updatedPlayerState });
+
+            // setPlayers(updatedPlayerCollection);
+
+        }
+
+        const onKeyUp = async (keyEvent: KeyboardEvent) => {
+            const { key } = keyEvent;
+            // console.log('keyup', key);
+
+            pressedKeys.current[key] = false;
+        }
+
+        document.addEventListener('keydown', onKeyDown);
+        document.addEventListener('keyup', onKeyUp);
+
+        return () => {
+            document.removeEventListener('keydown', onKeyDown);
+            document.removeEventListener('keyup', onKeyUp);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [connection]);
+
+    // Load users from DB
     useEffect(() => {
         axios.get<User[]>(`${API_BASE_URL}/users`)
             .then(
@@ -33,6 +107,7 @@ const Game: React.FunctionComponent = (): JSX.Element => {
             });
     }, []);
 
+    // Create connection
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()
             .withUrl(`${API_BASE_URL}/chat`)
@@ -42,6 +117,7 @@ const Game: React.FunctionComponent = (): JSX.Element => {
         setConnection(newConnection);
     }, []);
 
+    // Start connection and set up listeners
     useEffect(() => {
         if (connection) {
             connection.start()
@@ -86,6 +162,13 @@ const Game: React.FunctionComponent = (): JSX.Element => {
         connection.on('PlayersUpdated', (updatedPlayerState: any) => {
             const players = (playersRef.current as User[]);
 
+            console.log('PlayersUpdated', updatedPlayerState);
+
+            if (updatedPlayerState.id === playerRef.current!.id) {
+                console.log('skipping server update', updatedPlayerState)
+                return;
+            }
+
             // To maintain order
             const previousIndex = players.findIndex((player: User) => player.id === updatedPlayerState.id);
 
@@ -118,20 +201,20 @@ const Game: React.FunctionComponent = (): JSX.Element => {
         setPlayer(players[selectedPlayerId]);
     };
 
-    const moveSquare = async () => {
+    // const moveSquare = async () => {
 
-        if (connection?.state === HubConnectionState.Connected) {
-            try {
-                await connection?.send('MovePlayer', player);
-            }
-            catch (e) {
-                console.log(e);
-            }
-        }
-        else {
-            alert('No connection to server yet.');
-        }
-    };
+    //     if (connection?.state === HubConnectionState.Connected) {
+    //         try {
+    //             await connection?.send('MovePlayer', player);
+    //         }
+    //         catch (e) {
+    //             console.log(e);
+    //         }
+    //     }
+    //     else {
+    //         alert('No connection to server yet.');
+    //     }
+    // };
 
     return (
         <div>
@@ -148,7 +231,7 @@ const Game: React.FunctionComponent = (): JSX.Element => {
                     </Select>
                     <Canvas connection={connection as any} players={players} />
                     {/* <Chat connection={connection as any} /> */}
-                    <button onClick={moveSquare}>Move</button>
+                    {/* <button onClick={moveSquare}>Move</button> */}
                 </>
             )}
         </div>
