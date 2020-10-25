@@ -1,5 +1,5 @@
 
-import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../common/api/apiModels';
 import { API_BASE_URL } from '../common/constants';
