@@ -36,6 +36,7 @@ const Game: React.FunctionComponent = (): JSX.Element => {
 
     useEffect(() => {
 
+        // Move this to constant loop so movement doesnt only happen on keypress
         const onKeyDown = async (keyEvent: KeyboardEvent) => {
             const { key } = keyEvent;
             // console.log('down', key);
