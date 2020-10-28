@@ -4,4 +4,6 @@ export type User = {
     x: number;
     y: number;
     isActive: boolean;
+    targetX: number;
+    targetY: number;
 }

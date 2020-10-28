@@ -34,54 +34,83 @@ const Game: React.FunctionComponent = (): JSX.Element => {
         ENTER: "Enter"
     };
 
+    // const fps = 144;
+    // const interval = 1000 / fps;
+
+    // let currentTime = 0;
+    // let lastTime = new Date().getTime();
+    // let delta = 0;
+
+    const gameLoop = (): void => {
+        requestAnimationFrame(gameLoop);
+
+        // console.log('loop');
+        if (!playerRef.current) {
+            return;
+        }
+
+        // currentTime = (new Date()).getTime();
+        // delta = (currentTime - lastTime)
+        // console.log(delta);
+
+        // playerRef.current.targetX = playerRef.current.x;
+        // playerRef.current.targetY = playerRef.current.y;
+
+        if (pressedKeys.current[KEY.W] || pressedKeys.current[KEY.UP]) {
+            // If server says move is legit
+            // Move self
+            // Broadcast move
+            // updatedPlayerState.y -= 2;
+            // console.log('sending up');
+            // playerRef.current.targetY -= 2;
+            connection?.send('MovePlayerUp', playerRef.current);
+        }
+
+        if (pressedKeys.current[KEY.A] || pressedKeys.current[KEY.LEFT]) {
+            // updatedPlayerState.x -= 2;
+            // playerRef.current.targetX -= 2;
+            // console.log('sending left');
+            connection?.send('MovePlayerLeft', playerRef.current);
+        }
+
+        if (pressedKeys.current[KEY.S] || pressedKeys.current[KEY.DOWN]) {
+            // updatedPlayerState.y += 2;
+            // playerRef.current.targetY += 2;
+            // console.log('sending down');
+            connection?.send('MovePlayerDown', playerRef.current);
+        }
+
+        if (pressedKeys.current[KEY.D] || pressedKeys.current[KEY.RIGHT]) {
+            // updatedPlayerState.x += 2;
+            // playerRef.current.targetX += 2;
+            // console.log('sending right');
+            connection?.send('MovePlayerRight', playerRef.current);
+        }
+
+        // if (
+        //     // delta > interval && (
+        //     playerRef.current.x !== playerRef.current.targetX ||
+        //     playerRef.current.y !== playerRef.current.targetY
+        // ) {
+        //     connection?.send('MovePlayer', playerRef.current);
+        //     // lastTime = currentTime - (delta % interval);
+        // }
+
+    };
+
     useEffect(() => {
 
-        // Move this to constant loop so movement doesnt only happen on keypress
         const onKeyDown = async (keyEvent: KeyboardEvent) => {
             const { key } = keyEvent;
-            // console.log('down', key);
-
             pressedKeys.current[key] = true;
-            const updatedPlayerState: User = playerRef.current!;
-
-            if (pressedKeys.current[KEY.W] || pressedKeys.current[KEY.UP]) {
-                // If server says move is legit
-                // Move self
-                // Broadcast move
-                updatedPlayerState.y -= 2;
-                connection?.send('MovePlayerUp', playerRef.current);
-            }
-
-            if (pressedKeys.current[KEY.A] || pressedKeys.current[KEY.LEFT]) {
-                updatedPlayerState.x -= 2;
-                connection?.send('MovePlayerLeft', playerRef.current);
-            }
-
-            if (pressedKeys.current[KEY.S] || pressedKeys.current[KEY.DOWN]) {
-                updatedPlayerState.y += 2;
-                connection?.send('MovePlayerDown', playerRef.current);
-            }
-
-            if (pressedKeys.current[KEY.D] || pressedKeys.current[KEY.RIGHT]) {
-                updatedPlayerState.x += 2;
-                connection?.send('MovePlayerRight', playerRef.current);
-            }
-
-            // REMOVE:
-            // const previousIndex = players.findIndex((player: User) => player.id === updatedPlayerState.id);
-
-            // const updatedPlayerCollection = Object.assign([], players, { [previousIndex]: updatedPlayerState });
-
-            // setPlayers(updatedPlayerCollection);
-
         }
 
         const onKeyUp = async (keyEvent: KeyboardEvent) => {
             const { key } = keyEvent;
-            // console.log('keyup', key);
-
             pressedKeys.current[key] = false;
         }
+
+        gameLoop();
 
         document.addEventListener('keydown', onKeyDown);
         document.addEventListener('keyup', onKeyUp);
@@ -164,11 +193,12 @@ const Game: React.FunctionComponent = (): JSX.Element => {
             const players = (playersRef.current as User[]);
 
             console.log('PlayersUpdated', updatedPlayerState);
+            // console.log('updating players');
 
-            if (updatedPlayerState.id === playerRef.current!.id) {
-                console.log('skipping server update', updatedPlayerState)
-                return;
-            }
+            // if (updatedPlayerState.id === playerRef.current!.id) {
+            //     console.log('skipping server update', updatedPlayerState)
+            //     return;
+            // }
 
             // To maintain order
             const previousIndex = players.findIndex((player: User) => player.id === updatedPlayerState.id);
@@ -186,6 +216,8 @@ const Game: React.FunctionComponent = (): JSX.Element => {
 
             if ((playerRef.current as User).id === updatedPlayerState.id) {
                 setPlayer(updatedPlayerState);
+                // playerRef.current!.targetX = playerRef.current!.x;
+                // playerRef.current!.targetY = playerRef.current!.y;
             }
         });
 
@@ -201,21 +233,6 @@ const Game: React.FunctionComponent = (): JSX.Element => {
         console.log(selectedPlayerId);
         setPlayer(players[selectedPlayerId]);
     };
-
-    // const moveSquare = async () => {
-
-    //     if (connection?.state === HubConnectionState.Connected) {
-    //         try {
-    //             await connection?.send('MovePlayer', player);
-    //         }
-    //         catch (e) {
-    //             console.log(e);
-    //         }
-    //     }
-    //     else {
-    //         alert('No connection to server yet.');
-    //     }
-    // };
 
     return (
         <div>

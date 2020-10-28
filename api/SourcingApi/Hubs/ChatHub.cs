@@ -27,7 +27,8 @@ namespace SourcingApi.Hubs
         public async Task MovePlayerUp(UserDto player)
         {
             //player.X++;
-            //player.Y = Math.Max(0, player.Y - 2);
+            player.Y = Math.Max(0, player.Y - 2);
+            //player.Y = Math.Max(0, player.TargetY);
 
             await Clients.All.PlayersUpdated(player);
         }
@@ -35,14 +36,15 @@ namespace SourcingApi.Hubs
         public async Task MovePlayerDown(UserDto player)
         {
             //player.X++;
-            //player.Y = Math.Min(800, player.Y + 2);
+            player.Y = Math.Min(800, player.Y + 2);
+            //player.Y = Math.Min(800, player.TargetY);
 
             await Clients.All.PlayersUpdated(player);
         }
 
         public async Task MovePlayerLeft(UserDto player)
         {
-            //player.X = Math.Max(0, player.X - 2);
+            player.X = Math.Max(0, player.X - 2);
             //player.Y++;
 
             await Clients.All.PlayersUpdated(player);
@@ -50,8 +52,16 @@ namespace SourcingApi.Hubs
 
         public async Task MovePlayerRight(UserDto player)
         {
-            //player.X = Math.Min(800, player.X + 2);
+            player.X = Math.Min(800, player.X + 2);
             //player.Y++;
+
+            await Clients.All.PlayersUpdated(player);
+        }
+
+        public async Task MovePlayer(UserDto player)
+        {
+            player.X = Math.Min(Math.Max(0, player.TargetX), 800);
+            player.Y = Math.Min(Math.Max(0, player.TargetY), 800);
 
             await Clients.All.PlayersUpdated(player);
         }
