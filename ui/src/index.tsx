@@ -1,8 +1,6 @@
 import React from 'react';
-import AzureAD from 'react-aad-msal';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { authProvider } from './auth/AuthProvider';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
