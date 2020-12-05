@@ -34,12 +34,11 @@ const Game: React.FunctionComponent = (): JSX.Element => {
         ENTER: "Enter"
     };
 
-    // const fps = 144;
-    // const interval = 1000 / fps;
+    const interval = 50; // 20 ticks per second, tick = 50ms
 
-    // let currentTime = 0;
-    // let lastTime = new Date().getTime();
-    // let delta = 0;
+    let currentTime = 0;
+    let lastTime = new Date().getTime();
+    let delta = 0;
 
     const gameLoop = (): void => {
         requestAnimationFrame(gameLoop);
@@ -49,9 +48,24 @@ const Game: React.FunctionComponent = (): JSX.Element => {
             return;
         }
 
-        // currentTime = (new Date()).getTime();
-        // delta = (currentTime - lastTime)
+
+        currentTime = (new Date()).getTime();
+        delta = (currentTime - lastTime)
+
+        if (delta < interval) {
+            return;
+        }
+
         // console.log(delta);
+        // console.log(interval); // 6.9444
+
+        // if (
+        //     playerRef.current.x !== playerRef.current.targetX ||
+        //     playerRef.current.y !== playerRef.current.targetY
+        // ) {
+        //     // If there's a pending movement update, do nothing
+        //     return;
+        // }
 
         // playerRef.current.targetX = playerRef.current.x;
         // playerRef.current.targetY = playerRef.current.y;
@@ -62,39 +76,39 @@ const Game: React.FunctionComponent = (): JSX.Element => {
             // Broadcast move
             // updatedPlayerState.y -= 2;
             // console.log('sending up');
-            // playerRef.current.targetY -= 2;
-            connection?.send('MovePlayerUp', playerRef.current);
+            playerRef.current.targetY -= 2;
         }
 
         if (pressedKeys.current[KEY.A] || pressedKeys.current[KEY.LEFT]) {
             // updatedPlayerState.x -= 2;
-            // playerRef.current.targetX -= 2;
+            playerRef.current.targetX -= 2;
             // console.log('sending left');
-            connection?.send('MovePlayerLeft', playerRef.current);
+            // connection?.send('MovePlayerLeft', playerRef.current);
         }
 
         if (pressedKeys.current[KEY.S] || pressedKeys.current[KEY.DOWN]) {
             // updatedPlayerState.y += 2;
-            // playerRef.current.targetY += 2;
+            playerRef.current.targetY += 2;
             // console.log('sending down');
-            connection?.send('MovePlayerDown', playerRef.current);
+            // connection?.send('MovePlayerDown', playerRef.current);
         }
 
         if (pressedKeys.current[KEY.D] || pressedKeys.current[KEY.RIGHT]) {
             // updatedPlayerState.x += 2;
-            // playerRef.current.targetX += 2;
+            playerRef.current.targetX += 2;
             // console.log('sending right');
-            connection?.send('MovePlayerRight', playerRef.current);
+            // connection?.send('MovePlayerRight', playerRef.current);
         }
 
-        // if (
-        //     // delta > interval && (
-        //     playerRef.current.x !== playerRef.current.targetX ||
-        //     playerRef.current.y !== playerRef.current.targetY
-        // ) {
-        //     connection?.send('MovePlayer', playerRef.current);
-        //     // lastTime = currentTime - (delta % interval);
-        // }
+        if (
+
+            playerRef.current.x !== playerRef.current.targetX ||
+            playerRef.current.y !== playerRef.current.targetY
+        ) {
+            console.log(`delta: ${delta}, current time: ${currentTime}, last time: ${lastTime}, interval: ${interval}`);
+            connection?.send('MovePlayer', playerRef.current);
+            lastTime = currentTime - (delta % interval);
+        }
 
     };
 
@@ -128,7 +142,11 @@ const Game: React.FunctionComponent = (): JSX.Element => {
             .then(
                 (result) => {
                     // setIsLoaded(true);
-                    setPlayers(result.data);
+                    const players: User[] = result.data;
+
+                    players.forEach(player => { player.targetX = player.x; player.targetY = player.y });
+
+                    setPlayers(players);
                 }
             )
             .catch(error => {
@@ -161,28 +179,6 @@ const Game: React.FunctionComponent = (): JSX.Element => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [connection]);
 
-    // const createUser = async () => {
-
-    //     const newUser: User = {
-    //         id: players.length ? players.length + 1 : 1,
-    //         name: 'random',
-    //         x: Math.floor(Math.random() * Math.floor(800 - 15)),
-    //         y: Math.floor(Math.random() * Math.floor(800 - 15)),
-    //         isActive: true
-    //     };
-
-    //     try {
-    //         const res = await axios.post(`${API_BASE_URL}/user`, newUser);
-
-    //         setPlayers(res.data);
-
-    //         await connection?.send('PlayerJoin');
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-
-    // };
-
     const setupConnectionListeners = () => {
 
         if (!connection) {
@@ -192,13 +188,8 @@ const Game: React.FunctionComponent = (): JSX.Element => {
         connection.on('PlayersUpdated', (updatedPlayerState: any) => {
             const players = (playersRef.current as User[]);
 
-            console.log('PlayersUpdated', updatedPlayerState);
-            // console.log('updating players');
-
-            // if (updatedPlayerState.id === playerRef.current!.id) {
-            //     console.log('skipping server update', updatedPlayerState)
-            //     return;
-            // }
+            // console.log('PlayersUpdated', updatedPlayerState);
+            console.log('updating players');
 
             // To maintain order
             const previousIndex = players.findIndex((player: User) => player.id === updatedPlayerState.id);

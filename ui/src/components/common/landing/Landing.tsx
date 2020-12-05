@@ -1,6 +1,8 @@
-import { Link, List, ListItem, ListItemText, Typography } from '@material-ui/core';
+import { Button, Link, List, ListItem, ListItemText, Typography } from '@material-ui/core';
 import axios from 'axios'
 import React, { useEffect, useState } from "react";
+import AzureAD, { AuthenticationState, IAzureADFunctionProps } from 'react-aad-msal';
+import { authProvider, resetPasswordAuthority } from '../../../auth/AuthProvider';
 import { User } from '../api/apiModels';
 import { API_BASE_URL } from '../constants';
 import { landingStyles } from './LandingStyles';
@@ -54,6 +56,44 @@ const Landing = (): JSX.Element => {
                     {users.map((user: any) => <ListItem key={user.id}><ListItemText>User Id: {user.id}</ListItemText></ListItem>)}
                 </List>
             )}
+
+            <AzureAD provider={authProvider}>
+                {({ login, logout, authenticationState, accountInfo, error }: IAzureADFunctionProps) => {
+                    const isInProgress =
+                        authenticationState === AuthenticationState.InProgress;
+                    const isAuthenticated =
+                        authenticationState === AuthenticationState.Authenticated;
+                    const isUnauthenticated =
+                        authenticationState === AuthenticationState.Unauthenticated;
+
+                    if (error) {
+                        // console.error('', error);
+
+                        if (error.errorMessage.indexOf('AADB2C90118') > -1) {
+                            // Need to update authority to use the reset password flow
+                            authProvider.authority = resetPasswordAuthority;
+                            login();
+                        }
+                    }
+
+                    if (isAuthenticated) {
+                        return (
+                            <React.Fragment>
+                                <p>You're logged in as "{accountInfo?.account.name}"</p>
+                                <Button variant="contained" color="secondary" onClick={logout}>
+                                    Logout
+                                </Button>
+                            </React.Fragment>
+                        );
+                    } else if (isUnauthenticated || isInProgress) {
+                        return (
+                            <Button variant="contained" color="primary" onClick={login} disabled={isInProgress}>
+                                Login
+                            </Button>
+                        );
+                    }
+                }}
+            </AzureAD>
 
             {/* <Button disabled={!isLoaded} onClick={createUser} variant="contained" color="primary">Create User</Button> */}
         </div>

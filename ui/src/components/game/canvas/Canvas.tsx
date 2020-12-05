@@ -26,11 +26,11 @@ const Canvas: React.FunctionComponent<CanvasProps> = ({ connection, players }: C
     }, []);
 
     const clearCanvas = (context: any) => {
-        context.fillStyle = '#FFFFFF';
-        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     };
 
     const drawPlayers = (context: any) => {
+        // console.log('draw');
         if (playersRef.current) {
             clearCanvas(context);
             playersRef.current.forEach((player, index) => {
