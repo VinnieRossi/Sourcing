@@ -16,8 +16,8 @@ const signInPolicy = "B2C_1_sourcing_signup";
 const clientId = "6d7e71b1-698f-4d6e-89c5-c4d1206cc845";
 const tenantSubdomain = tenant.split(".")[0];
 const instance = `https://${tenantSubdomain}.b2clogin.com/tfp/`;
-const signInAuthority = `${instance}${tenant}/${signInPolicy}`;
 
+export const signInAuthority = `${instance}${tenant}/${signInPolicy}`;
 export const resetPasswordAuthority = `${instance}${tenant}/${'B2C_1_sourcing_reset'}`;
 
 // The auth provider should be a singleton. Best practice is to only have it ever instantiated once.

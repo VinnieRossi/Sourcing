@@ -2,7 +2,7 @@ import { Button, Link, List, ListItem, ListItemText, Typography } from '@materia
 import axios from 'axios'
 import React, { useEffect, useState } from "react";
 import AzureAD, { AuthenticationState, IAzureADFunctionProps } from 'react-aad-msal';
-import { authProvider, resetPasswordAuthority } from '../../../auth/AuthProvider';
+import { authProvider, resetPasswordAuthority, signInAuthority } from '../../../auth/AuthProvider';
 import { User } from '../api/apiModels';
 import { API_BASE_URL } from '../constants';
 import { landingStyles } from './LandingStyles';
@@ -68,12 +68,14 @@ const Landing = (): JSX.Element => {
 
                     if (error) {
                         // console.error('', error);
+                        authProvider.authority = signInAuthority;
 
                         if (error.errorMessage.indexOf('AADB2C90118') > -1) {
                             // Need to update authority to use the reset password flow
                             authProvider.authority = resetPasswordAuthority;
                             login();
                         }
+
                     }
 
                     if (isAuthenticated) {
