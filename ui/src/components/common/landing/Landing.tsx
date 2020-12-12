@@ -21,6 +21,8 @@ import { User } from "../api/apiModels";
 import { API_BASE_URL } from "../constants";
 import StripeCheckoutButton from "../payments/StripeCheckoutButton";
 import { landingStyles } from "./LandingStyles";
+import LineGraph from "./LineGraph";
+import data from "../../../assets/2008/2008.json";
 
 const Landing = (): JSX.Element => {
   // TODO: Create custom hook to handle error, loading, data
@@ -60,57 +62,65 @@ const Landing = (): JSX.Element => {
         </List>
       )}
 
-      <AzureAD provider={authProvider}>
-        {({
-          login,
-          logout,
-          authenticationState,
-          accountInfo,
-          error,
-        }: IAzureADFunctionProps) => {
-          const isInProgress =
-            authenticationState === AuthenticationState.InProgress;
-          const isAuthenticated =
-            authenticationState === AuthenticationState.Authenticated;
-          const isUnauthenticated =
-            authenticationState === AuthenticationState.Unauthenticated;
+      <LineGraph data={data} />
 
-          if (error) {
-            // console.error('', error);
-            authProvider.authority = signInAuthority;
+      {false && (
+        <AzureAD provider={authProvider}>
+          {({
+            login,
+            logout,
+            authenticationState,
+            accountInfo,
+            error,
+          }: IAzureADFunctionProps) => {
+            const isInProgress =
+              authenticationState === AuthenticationState.InProgress;
+            const isAuthenticated =
+              authenticationState === AuthenticationState.Authenticated;
+            const isUnauthenticated =
+              authenticationState === AuthenticationState.Unauthenticated;
 
-            if (error.errorMessage.indexOf("AADB2C90118") > -1) {
-              // Need to update authority to use the reset password flow
-              authProvider.authority = resetPasswordAuthority;
-              login();
+            if (error) {
+              // console.error('', error);
+              authProvider.authority = signInAuthority;
+
+              if (error.errorMessage.indexOf("AADB2C90118") > -1) {
+                // Need to update authority to use the reset password flow
+                authProvider.authority = resetPasswordAuthority;
+                login();
+              }
             }
-          }
 
-          if (isAuthenticated) {
-            return (
-              <React.Fragment>
-                <p>You're logged in as "{accountInfo?.account.name}"</p>
-                <Button variant="contained" color="secondary" onClick={logout}>
-                  Logout
+            if (isAuthenticated) {
+              return (
+                <React.Fragment>
+                  <p>You're logged in as "{accountInfo?.account.name}"</p>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={logout}
+                  >
+                    Logout
+                  </Button>
+                </React.Fragment>
+              );
+            } else if (isUnauthenticated || isInProgress) {
+              return (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={login}
+                  disabled={isInProgress}
+                >
+                  Login
                 </Button>
-              </React.Fragment>
-            );
-          } else if (isUnauthenticated || isInProgress) {
-            return (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={login}
-                disabled={isInProgress}
-              >
-                Login
-              </Button>
-            );
-          }
-        }}
-      </AzureAD>
+              );
+            }
+          }}
+        </AzureAD>
+      )}
 
-      <StripeCheckoutButton />
+      {false && <StripeCheckoutButton />}
     </div>
   );
 };
