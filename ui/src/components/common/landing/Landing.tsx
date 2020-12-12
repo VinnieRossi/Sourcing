@@ -22,7 +22,8 @@ import { API_BASE_URL } from "../constants";
 import StripeCheckoutButton from "../payments/StripeCheckoutButton";
 import { landingStyles } from "./LandingStyles";
 import LineGraph from "./LineGraph";
-import data from "../../../assets/2008/2008.json";
+import twothousandeight from "../../../assets/2008/2008.json";
+import twentynineteen from "../../../assets/2008/2019.json";
 
 const Landing = (): JSX.Element => {
   // TODO: Create custom hook to handle error, loading, data
@@ -62,7 +63,7 @@ const Landing = (): JSX.Element => {
         </List>
       )}
 
-      <LineGraph data={data} />
+      <LineGraph data={twentynineteen} />
 
       {false && (
         <AzureAD provider={authProvider}>

@@ -1,4 +1,12 @@
-import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
+import {
+  Button,
+  Card,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from "@material-ui/core";
 import React, { useEffect, useMemo, useState } from "react";
 import { Chart } from "react-charts";
 import NumberFormat from "react-number-format";
@@ -16,11 +24,14 @@ const LineGraph = ({ data }: LineGraphProps) => {
     return [new Date(datum.date).getTime(), parseFloat(datum.value.toFixed(2))];
   });
 
-  const [cash, setCash] = useState(1000000);
+  const startingBalance = 1000000;
+  const [transactions, setTransactions] = useState<any>([]);
+
+  const [cash, setCash] = useState(startingBalance);
   const [shares, setShares] = useState(0);
   const [portfolioValue, setPortfolioValue] = useState(0);
 
-  const [ghostCash, setGhostCash] = useState(1000000);
+  const [ghostCash, setGhostCash] = useState(startingBalance);
   const [ghostShares, setGhostShares] = useState(0);
   const [ghostPortfolioValue, setGhostPortfolioValue] = useState(0);
 
@@ -63,7 +74,6 @@ const LineGraph = ({ data }: LineGraphProps) => {
   useInterval(() => {
     if (daysPassed === cleanData.length - 1) {
       setIsGameOver(true);
-      console.log("GAME OVER!");
     } else if (!isPaused) {
       // Trigger a new day. This means a new graph draw and new share price
       setSharePrice(cleanData[daysPassed + 1][1]);
@@ -101,35 +111,86 @@ const LineGraph = ({ data }: LineGraphProps) => {
 
   const purchaseShares = () => {
     const sharePrice = cleanData[daysPassed][1];
+
+    if (sharePrice > cash) {
+      return;
+    }
+
     const numberOfPurchasedShares = Math.floor(cash / sharePrice);
     const transactionAmount = parseFloat(
       (numberOfPurchasedShares * sharePrice).toFixed(2)
     );
     const newBalance = parseFloat((cash - transactionAmount).toFixed(2));
 
-    // Remove
-    console.log(`Bought on day ${daysPassed}, at price ${sharePrice}`);
-    console.log(
-      `Buying ${numberOfPurchasedShares} shares for ${transactionAmount}`
-    );
-    console.log(`New balance: ${newBalance}`);
+    const transaction = {
+      date: new Date(cleanData[daysPassed][0]),
+      shareQuantity: numberOfPurchasedShares,
+      pricePerShare: sharePrice,
+      transactionAmount: transactionAmount,
+      currentPortfolioBalance: newBalance + transactionAmount,
+      transactionType: "bought",
+    };
 
     setShares(numberOfPurchasedShares);
     setCash(newBalance);
+    setTransactions([...transactions, transaction]);
   };
 
   const sellShares = () => {
+    if (shares === 0) {
+      return;
+    }
+
     const sharePrice = cleanData[daysPassed][1];
     const shareSellAmount = parseFloat((sharePrice * shares).toFixed(2));
     const newBalance = parseFloat((cash + shareSellAmount).toFixed(2));
 
-    // Remove
-    console.log(`Sold on day ${daysPassed}, at price ${sharePrice}`);
-    console.log(`Selling ${shares} shares for ${sharePrice}`);
-    console.log(`New balance: ${newBalance}`);
+    const transaction = {
+      date: new Date(cleanData[daysPassed][0]),
+      shareQuantity: shares,
+      pricePerShare: sharePrice,
+      currentPortfolioBalance: newBalance,
+      transactionType: "sold",
+    };
 
     setShares(0);
     setCash(newBalance);
+    setTransactions([...transactions, transaction]);
+  };
+
+  const generateTransactionLineItem = (transaction: any): any => {
+    const string = `${transaction.date.toLocaleDateString()}: ${
+      transaction.shareQuantity
+    } shares ${transaction.transactionType} at `;
+
+    return (
+      <>
+        <Typography style={{ display: "inline" }}>{string}</Typography>
+        <NumberFormat
+          value={transaction.pricePerShare}
+          decimalScale={2}
+          fixedDecimalScale
+          displayType={"text"}
+          thousandSeparator={true}
+          prefix={"$"}
+        />
+        <Typography style={{ display: "inline" }}>. New balance: </Typography>
+        <NumberFormat
+          value={transaction.currentPortfolioBalance}
+          style={{
+            color:
+              transaction.currentPortfolioBalance >= startingBalance
+                ? "green"
+                : "red",
+          }}
+          decimalScale={2}
+          fixedDecimalScale
+          displayType={"text"}
+          thousandSeparator={true}
+          prefix={"$"}
+        />
+      </>
+    );
   };
 
   return (
@@ -149,23 +210,27 @@ const LineGraph = ({ data }: LineGraphProps) => {
         />
         <Grid container justify="center">
           <Grid item container justify="center" spacing={3}>
-            <Grid item>
-              <Button
-                onClick={() => {
-                  setGameSpeed(Math.min(gameSpeed + 1, 10));
-                }}
-              >
-                Slow down
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button
-                onClick={() => {
-                  setGameSpeed(Math.max(gameSpeed - 1, 1));
-                }}
-              >
-                Speed up
-              </Button>
+            <Grid item container justify="flex-start">
+              <Grid item>
+                <Button
+                  disabled={gameSpeed === 10}
+                  onClick={() => {
+                    setGameSpeed(Math.min(gameSpeed + 1, 10));
+                  }}
+                >
+                  Slow down
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  disabled={gameSpeed === 1}
+                  onClick={() => {
+                    setGameSpeed(Math.max(gameSpeed - 1, 1));
+                  }}
+                >
+                  Speed up
+                </Button>
+              </Grid>
             </Grid>
             <Grid item>
               <Button
@@ -232,6 +297,9 @@ const LineGraph = ({ data }: LineGraphProps) => {
               <Grid item>
                 <Typography>Portfolio Value: </Typography>
                 <NumberFormat
+                  style={{
+                    color: portfolioValue >= startingBalance ? "green" : "red",
+                  }}
                   value={portfolioValue}
                   decimalScale={2}
                   fixedDecimalScale
@@ -239,6 +307,22 @@ const LineGraph = ({ data }: LineGraphProps) => {
                   thousandSeparator={true}
                   prefix={"$"}
                 />
+              </Grid>
+              <Grid item>
+                <Typography>Rate of Return</Typography>
+                <Typography
+                  style={{
+                    color: portfolioValue >= startingBalance ? "green" : "red",
+                  }}
+                >
+                  {parseFloat(
+                    (
+                      ((portfolioValue - startingBalance) / startingBalance) *
+                      100
+                    ).toFixed(2)
+                  )}
+                  %
+                </Typography>
               </Grid>
             </Grid>
 
@@ -261,6 +345,10 @@ const LineGraph = ({ data }: LineGraphProps) => {
               <Grid item>
                 <Typography>Ghost Portfolio Value: </Typography>
                 <NumberFormat
+                  style={{
+                    color:
+                      ghostPortfolioValue >= startingBalance ? "green" : "red",
+                  }}
                   value={ghostPortfolioValue}
                   decimalScale={2}
                   fixedDecimalScale
@@ -269,10 +357,60 @@ const LineGraph = ({ data }: LineGraphProps) => {
                   prefix={"$"}
                 />
               </Grid>
+              <Grid item>
+                <Typography>Rate of Return</Typography>
+                <Typography
+                  style={{
+                    color:
+                      ghostPortfolioValue >= startingBalance ? "green" : "red",
+                  }}
+                >
+                  {parseFloat(
+                    (
+                      ((ghostPortfolioValue - startingBalance) /
+                        startingBalance) *
+                      100
+                    ).toFixed(2)
+                  )}
+                  %
+                </Typography>
+              </Grid>
             </Grid>
+          </Grid>
+          <Grid container justify="flex-end">
+            <Card
+              style={{
+                minWidth: 275,
+                minHeight: 215,
+                maxHeight: 300,
+                overflow: "auto",
+                padding: 15,
+              }}
+            >
+              <Typography variant="h5">Transaction History</Typography>
+              <List>
+                {transactions.map((transaction, index) => (
+                  <ListItem
+                    key={index}
+                    style={{ paddingBottom: 0, paddingTop: 0 }}
+                  >
+                    <ListItemText>
+                      {generateTransactionLineItem(transaction)}
+                      {/* {transaction.date.toLocaleDateString()} -{" "}
+                      {transaction.shareQuantity} shares{" "}
+                      {transaction.transactionType} at{" "}
+                      {transaction.pricePerShare} New balance:{" "}
+                      {transaction.currentPortfolioBalance} */}
+                    </ListItemText>
+                  </ListItem>
+                ))}
+              </List>
+            </Card>
           </Grid>
         </Grid>
       </div>
+
+      {isGameOver && <span>game over</span>}
     </>
   );
 };
