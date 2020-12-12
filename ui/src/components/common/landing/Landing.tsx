@@ -23,6 +23,7 @@ import StripeCheckoutButton from "../payments/StripeCheckoutButton";
 import { landingStyles } from "./LandingStyles";
 import LineGraph from "./LineGraph";
 import twothousandeight from "../../../assets/2008/2008.json";
+import twentytwelve from "../../../assets/2008/2012.json";
 import twentynineteen from "../../../assets/2008/2019.json";
 
 const Landing = (): JSX.Element => {
@@ -63,7 +64,7 @@ const Landing = (): JSX.Element => {
         </List>
       )}
 
-      <LineGraph data={twentynineteen} />
+      <LineGraph data={twentytwelve} />
 
       {false && (
         <AzureAD provider={authProvider}>

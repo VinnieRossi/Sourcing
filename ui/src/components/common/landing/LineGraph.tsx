@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  CardHeader,
   Grid,
   List,
   ListItem,
@@ -387,7 +388,7 @@ const LineGraph = ({ data }: LineGraphProps) => {
                 padding: 15,
               }}
             >
-              <Typography variant="h5">Transaction History</Typography>
+              <CardHeader title="Transaction History" />
               <List>
                 {transactions.map((transaction, index) => (
                   <ListItem
