@@ -2,6 +2,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React from "react";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
+import ProtectedRoute from "./auth/ProtectedRoute";
 import About from "./components/About";
 import { STRIPE_PK } from "./components/common/constants";
 import Landing from "./components/common/landing/Landing";
@@ -15,7 +16,8 @@ const App = (): JSX.Element => {
         <Elements stripe={stripePromise}>
           <main>
             <Switch>
-              <Route path="/about" component={About} />
+              <ProtectedRoute path="test" component={About} />
+              <Route path="/about" exact component={About} />
               <Route path="/" component={Landing} />
             </Switch>
           </main>
