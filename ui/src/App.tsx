@@ -16,7 +16,7 @@ const App = (): JSX.Element => {
         <Elements stripe={stripePromise}>
           <main>
             <Switch>
-              <ProtectedRoute path="test" component={About} />
+              <ProtectedRoute path="/test" component={About} />
               <Route path="/about" exact component={About} />
               <Route path="/" component={Landing} />
             </Switch>
