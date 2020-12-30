@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Mvc;
@@ -22,6 +23,7 @@ namespace SourcingApi.Controllers
             //_appConfigProvider = appConfigProvider;
         }
 
+        [Authorize]
         [HttpGet("users")]
         public async Task<List<UserDto>> GetUsers()
         {

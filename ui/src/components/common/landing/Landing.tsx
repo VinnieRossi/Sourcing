@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   Button,
   Link,
@@ -28,19 +29,36 @@ const Landing = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
 
+  const {
+    loginWithRedirect,
+    logout,
+    user,
+    isAuthenticated,
+    isLoading,
+    getAccessTokenSilently,
+  } = useAuth0();
   const styles = landingStyles();
 
   useEffect(() => {
-    axios
-      .get<User[]>(`${API_BASE_URL}/users`)
-      .then((result) => {
-        setIsLoaded(true);
-        setUsers(result.data);
-      })
-      .catch((error) => {
-        setIsLoaded(true);
-        setError(error);
-      });
+    const retrieveUsers = async () => {
+      const token = await getAccessTokenSilently();
+      axios
+        .get<User[]>(`${API_BASE_URL}/users`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((result) => {
+          axios.defaults.headers.common["Authorization"] = token;
+          setIsLoaded(true);
+          setUsers(result.data);
+        })
+        .catch((error) => {
+          setIsLoaded(true);
+          setError(error);
+        });
+    };
+    retrieveUsers();
   }, []);
 
   return (
@@ -58,6 +76,32 @@ const Landing = (): JSX.Element => {
             </ListItem>
           ))}
         </List>
+      )}
+
+      {/* Goal today: Login page via Auth0: https://auth0.com/docs/universal-login/universal-login-page-customization */}
+      {/* Additional goal: Forcing redirect on protected URLs to login page if not logged in */}
+      {/* Additional goal: Hiding/showing depending on login status */}
+
+      <button
+        onClick={() => {
+          loginWithRedirect();
+        }}
+      >
+        Log in
+      </button>
+
+      <button onClick={() => logout({ returnTo: window.location.origin })}>
+        Log Out
+      </button>
+
+      {isLoading && <div>loading...</div>}
+
+      {isAuthenticated && (
+        <div>
+          <img src={user.picture} alt={user.name} />
+          <h2>{user.name}</h2>
+          <p>{user.email}</p>
+        </div>
       )}
 
       {false && (

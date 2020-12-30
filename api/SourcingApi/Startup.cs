@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,18 @@ namespace SourcingApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            string domain = $"https://{Configuration["Auth0:Domain"]}/";
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = domain;
+                options.Audience = Configuration["Auth0:Audience"];
+            });
 
             services.AddDbContext<SourcingDbContext>(
                 options => options.UseSqlServer(
@@ -60,6 +73,9 @@ namespace SourcingApi
             {
                 app.UseHsts();
             }
+
+            
+            app.UseAuthentication();
 
             // Run migrations on app start
             using (var serviceScope = app.ApplicationServices
