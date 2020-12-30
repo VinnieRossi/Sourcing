@@ -49,7 +49,6 @@ const Landing = (): JSX.Element => {
           },
         })
         .then((result) => {
-          axios.defaults.headers.common["Authorization"] = token;
           setIsLoaded(true);
           setUsers(result.data);
         })
