@@ -18,18 +18,18 @@ const App = (): JSX.Element => {
   return (
     <>
       <Router>
-        <Auth0ProviderWithHistory>
-          <Elements stripe={stripePromise}>
-            <main>
-              <Switch>
-                <ProtectedRoute path="/test" exact component={About} />
-                <AuthProtectedRoute path="/auth" exact component={About} />
-                <Route path="/about" exact component={About} />
-                <Route path="/" component={Landing} />
-              </Switch>
-            </main>
-          </Elements>
-        </Auth0ProviderWithHistory>
+        {/* <Auth0ProviderWithHistory> */}
+        <Elements stripe={stripePromise}>
+          <main>
+            <Switch>
+              <ProtectedRoute path="/test" exact component={About} />
+              {/* <AuthProtectedRoute path="/auth" exact component={About} /> */}
+              <Route path="/about" exact component={About} />
+              <Route path="/" component={Landing} />
+            </Switch>
+          </main>
+        </Elements>
+        {/* </Auth0ProviderWithHistory> */}
       </Router>
     </>
   );

@@ -28,17 +28,18 @@ namespace SourcingApi
         {
             services.AddControllers();
 
-            string domain = $"https://{Configuration["Auth0:Domain"]}/";
+            // Auth0 Authorization
+            //string domain = $"https://{Configuration["Auth0:Domain"]}/";
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.Authority = domain;
-                options.Audience = Configuration["Auth0:Audience"];
-            });
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //}).AddJwtBearer(options =>
+            //{
+            //    options.Authority = domain;
+            //    options.Audience = Configuration["Auth0:Audience"];
+            //});
 
             services.AddDbContext<SourcingDbContext>(
                 options => options.UseSqlServer(

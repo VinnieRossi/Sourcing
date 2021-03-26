@@ -23,7 +23,7 @@ namespace SourcingApi.Controllers
             //_appConfigProvider = appConfigProvider;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("users")]
         public async Task<List<UserDto>> GetUsers()
         {

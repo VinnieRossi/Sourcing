@@ -29,24 +29,24 @@ const Landing = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
 
-  const {
-    loginWithRedirect,
-    logout,
-    user,
-    isAuthenticated,
-    isLoading,
-    getAccessTokenSilently,
-  } = useAuth0();
+  // const {
+  //   loginWithRedirect,
+  //   logout,
+  //   user,
+  //   isAuthenticated,
+  //   isLoading,
+  //   getAccessTokenSilently,
+  // } = useAuth0();
   const styles = landingStyles();
 
   useEffect(() => {
     const retrieveUsers = async () => {
-      const token = await getAccessTokenSilently();
+      // const token = await getAccessTokenSilently();
       axios
         .get<User[]>(`${API_BASE_URL}/users`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
         })
         .then((result) => {
           setIsLoaded(true);
@@ -80,8 +80,9 @@ const Landing = (): JSX.Element => {
       {/* Goal today: Login page via Auth0: https://auth0.com/docs/universal-login/universal-login-page-customization */}
       {/* Additional goal: Forcing redirect on protected URLs to login page if not logged in */}
       {/* Additional goal: Hiding/showing depending on login status */}
+      {/* TODO: Set global axios config so all requests have token */}
 
-      <button
+      {/* <button
         onClick={() => {
           loginWithRedirect();
         }}
@@ -101,9 +102,9 @@ const Landing = (): JSX.Element => {
           <h2>{user.name}</h2>
           <p>{user.email}</p>
         </div>
-      )}
+      )} */}
 
-      {false && (
+      {true && (
         <AzureAD provider={authProvider}>
           {({
             login,
